@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title></title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .dplayer-notice {
+        display: none;
+      }
+
+      .dplayer-setting {
+        display: none !important;
+      }
+
+      .dplayer-menu {
+        display: none !important;
+      }
+
+      .dplayer-full-in-icon {
+        display: none !important;
+      }
+      .dplayer-bar-wrap {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="dplayer"></div>
+    <script src="./video/flv.min.js"></script>
+    <script src="./video/hls.min.js"></script>
+    <script src="./video/DPlayer.min.js"></script>
+    <script>
+      function getQueryVariable(variable) {
+        let query = window.location.search.substring(1);
+        let arr = query.split('url=');
+        return arr[1];
+      }
+      let url = getQueryVariable('url');
+      console.log(url);
+
+      if (url.indexOf('m3u8') !== -1) {
+        const dp = new DPlayer({
+          airplay: true,
+          container: document.getElementById('dplayer'),
+          video: {
+            url: url || 'https://hls.jwjdsbei.com/live/ai666/playlist.m3u8',
+            type: 'customHls',
+            customType: {
+              customHls: function(video, player) {
+                const hls = new Hls();
+                hls.loadSource(video.src);
+                hls.attachMedia(video);
+              }
+            }
+          }
+        });
+        dp.play();
+      } else if (url.indexOf('mp4') !== -1) {
+        const dp = new DPlayer({
+          airplay: true,
+          container: document.getElementById('dplayer'),
+          video: {
+            url,
+            type: 'auto'
+          }
+        });
+        dp.play();
+      } else {
+        const dp = new DPlayer({
+          container: document.getElementById('dplayer'),
+          video: {
+            url: url || 'https://hdl.jwjdsbei.com/live/ai666.flv',
+            type: 'customFlv',
+            customType: {
+              customFlv: function(video, player) {
+                const flvPlayer = flvjs.createPlayer({
+                  type: 'flv',
+                  url: video.src
+                });
+                flvPlayer.attachMediaElement(video);
+                flvPlayer.load();
+              }
+            }
+          }
+        });
+        dp.play();
+      }
+    </script>
+  </body>
+</html>
